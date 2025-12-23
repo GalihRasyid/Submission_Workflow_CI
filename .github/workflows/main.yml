@@ -1,0 +1,44 @@
+name: CI/CD Pipeline Diabetes
+
+on: [push]
+
+jobs:
+  build-and-train:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Dependencies
+      run: |
+        pip install mlflow dagshub pandas scikit-learn joblib prometheus-client
+
+    - name: Run Training with MLflow Run
+      env:
+        # Masukkan Token & Config di Environment Variable
+        DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+        MLFLOW_TRACKING_USERNAME: GalihRasyid
+        MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
+        # PENTING: Set URI di sini agar mlflow run tahu tujuannya
+        MLFLOW_TRACKING_URI: https://dagshub.com/GalihRasyid/submission_diabetes_GalihRasyid.mlflow
+      run: |
+        if [ -d "MLProject" ]; then
+          cd MLProject
+        fi
+        
+        # Jalankan mlflow run
+        # Tambahkan --experiment-name agar run dibuat di tempat yang benar
+        mlflow run . --env-manager=local --experiment-name Diabetes_Fix_Artifacts
+
+    - name: Upload Model Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: model-artifact
+        path: '**/model.pkl'
+        retention-days: 5

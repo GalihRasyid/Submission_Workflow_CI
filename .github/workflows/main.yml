@@ -19,8 +19,6 @@ jobs:
       run: |
         pip install mlflow dagshub pandas scikit-learn joblib prometheus-client
 
-    # ... (bagian atas sama) ...
-    
     - name: Run Training with MLflow Run
       env:
         DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
@@ -32,10 +30,10 @@ jobs:
           cd MLProject
         fi
         
-        # PERINTAH KUNCI:
-        # --experiment-name harus SAMA dengan yang kita inginkan
+        # Pastikan nama eksperimen konsisten
         mlflow run . --env-manager=local --experiment-name Diabetes_Fixed_Model
 
+    # Upload Artifact ke GitHub (Opsional tapi bagus untuk backup)
     - name: Upload Model Artifact
       uses: actions/upload-artifact@v4
       with:

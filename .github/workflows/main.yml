@@ -19,6 +19,8 @@ jobs:
       run: |
         pip install mlflow dagshub pandas scikit-learn joblib prometheus-client
 
+    # ... (bagian atas sama) ...
+    
     - name: Run Training with MLflow Run
       env:
         DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
@@ -30,8 +32,8 @@ jobs:
           cd MLProject
         fi
         
-        # PERBAIKAN DISINI: Kita tambahkan parameter --experiment-name
-        # Agar Run ID dibuat langsung di dalam eksperimen yang benar
+        # PERINTAH KUNCI:
+        # --experiment-name harus SAMA dengan yang kita inginkan
         mlflow run . --env-manager=local --experiment-name Diabetes_Fixed_Model
 
     - name: Upload Model Artifact
